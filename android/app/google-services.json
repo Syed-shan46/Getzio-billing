@@ -1,0 +1,124 @@
+{
+  "project_info": {
+    "project_number": "506162850052",
+    "project_id": "ourapp-c97b8",
+    "storage_bucket": "ourapp-c97b8.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:506162850052:android:3296822b938d35a1114851",
+        "android_client_info": {
+          "package_name": "com.getzio.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCoQ2fsPp8TaNL2Mlth9nYCuXDwMN6_t8c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:506162850052:android:8abb4a0b8ce9c541114851",
+        "android_client_info": {
+          "package_name": "com.getzio.billing.getzio_billing"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCoQ2fsPp8TaNL2Mlth9nYCuXDwMN6_t8c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:506162850052:android:b288dfc0ca9af90e114851",
+        "android_client_info": {
+          "package_name": "com.getzio.delivery"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCoQ2fsPp8TaNL2Mlth9nYCuXDwMN6_t8c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:506162850052:android:071e8ce19304f2ec114851",
+        "android_client_info": {
+          "package_name": "com.getzio.insights"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCoQ2fsPp8TaNL2Mlth9nYCuXDwMN6_t8c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:506162850052:android:b2ad6186e06dcf54114851",
+        "android_client_info": {
+          "package_name": "com.getzio.partner"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCoQ2fsPp8TaNL2Mlth9nYCuXDwMN6_t8c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:506162850052:android:b0fc7110182a5998114851",
+        "android_client_info": {
+          "package_name": "com.getzio.todo.getzio_todo_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCoQ2fsPp8TaNL2Mlth9nYCuXDwMN6_t8c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
