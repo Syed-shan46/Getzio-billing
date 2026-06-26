@@ -212,6 +212,177 @@ class _DocumentDetailsSheetState extends ConsumerState<DocumentDetailsSheet> {
     } catch (_) {}
   }
 
+  void _showShareDesignPicker(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setModalState) {
+            final isDark = Theme.of(context).brightness == Brightness.dark;
+            final sheetBg = isDark ? AppColors.backgroundDark : Colors.white;
+            final textCol = isDark ? Colors.white : AppColors.textPrimaryLight;
+            final borderCol = isDark ? AppColors.borderDark : AppColors.borderLight;
+
+            final templates = [
+              {'id': 'modern', 'name': 'Modern Bold', 'desc': 'Clean, dark headers, professional', 'icon': Icons.space_dashboard_outlined, 'color': Colors.indigo},
+              {'id': 'classic', 'name': 'Classic Serif', 'desc': 'Traditional layout with subtle borders', 'icon': Icons.description_outlined, 'color': Colors.brown},
+              {'id': 'corporate', 'name': 'Corporate Pro', 'desc': 'Grid alignment, detailed headers', 'icon': Icons.business_outlined, 'color': Colors.blueGrey},
+              {'id': 'minimal', 'name': 'Minimalist', 'desc': 'Ultra light, plenty of negative space', 'icon': Icons.notes_outlined, 'color': Colors.grey},
+            ];
+
+            return Container(
+              decoration: BoxDecoration(
+                color: sheetBg,
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(28),
+                  topRight: Radius.circular(28),
+                ),
+              ),
+              padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 20),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Align(
+                    alignment: Alignment.center,
+                    child: Container(
+                      width: 38,
+                      height: 4,
+                      decoration: BoxDecoration(
+                        color: borderCol.withOpacity(0.8),
+                        borderRadius: BorderRadius.circular(2),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 18),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Select Design Theme',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: textCol,
+                        ),
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.close),
+                        onPressed: () => Navigator.pop(context),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    'Choose the layout template to share this document.',
+                    style: TextStyle(
+                      fontSize: 13,
+                      color: isDark ? AppColors.textSecondaryDark : AppColors.textSecondaryLight,
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  ...templates.map((temp) {
+                    final isSelected = _selectedTemplate == temp['id'];
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 12.0),
+                      child: InkWell(
+                        onTap: () {
+                          setModalState(() {
+                            _selectedTemplate = temp['id'] as String;
+                          });
+                          setState(() {});
+                        },
+                        borderRadius: BorderRadius.circular(16),
+                        child: Container(
+                          padding: const EdgeInsets.all(16),
+                          decoration: BoxDecoration(
+                            color: isSelected
+                                ? (temp['color'] as Color).withOpacity(0.08)
+                                : Colors.transparent,
+                            borderRadius: BorderRadius.circular(16),
+                            border: Border.all(
+                              color: isSelected
+                                  ? (temp['color'] as Color)
+                                  : borderCol,
+                              width: isSelected ? 2 : 1,
+                            ),
+                          ),
+                          child: Row(
+                            children: [
+                              Container(
+                                width: 44,
+                                height: 44,
+                                decoration: BoxDecoration(
+                                  color: (temp['color'] as Color).withOpacity(0.12),
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Icon(
+                                  temp['icon'] as IconData,
+                                  color: temp['color'] as Color,
+                                ),
+                              ),
+                              const SizedBox(width: 16),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      temp['name'] as String,
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 15,
+                                        color: textCol,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 2),
+                                    Text(
+                                      temp['desc'] as String,
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        color: isDark ? AppColors.textSecondaryDark : AppColors.textSecondaryLight,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              if (isSelected)
+                                Icon(
+                                  Icons.check_circle,
+                                  color: temp['color'] as Color,
+                                )
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
+                  }).toList(),
+                  const SizedBox(height: 16),
+                  ElevatedButton.icon(
+                    onPressed: () {
+                      Navigator.pop(context);
+                      _generatePdf(isShare: true);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                      backgroundColor: Theme.of(context).colorScheme.primary,
+                      foregroundColor: Colors.white,
+                    ),
+                    icon: const Icon(Icons.share, size: 18),
+                    label: const Text('Share PDF', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                  ),
+                  const SizedBox(height: 10),
+                ],
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final doc = widget.document;
@@ -502,7 +673,7 @@ class _DocumentDetailsSheetState extends ConsumerState<DocumentDetailsSheet> {
             children: [
               Expanded(
                 child: OutlinedButton.icon(
-                  onPressed: () => _generatePdf(isShare: true),
+                  onPressed: () => _showShareDesignPicker(context),
                   style: OutlinedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
