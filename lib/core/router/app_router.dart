@@ -10,6 +10,7 @@ import 'package:getzio_billing/features/auth/presentation/screens/splash_screen.
 import 'package:getzio_billing/features/company/presentation/providers/company_provider.dart';
 import 'package:getzio_billing/features/company/data/models/company_model.dart';
 import 'package:getzio_billing/features/company/presentation/screens/company_setup_screen.dart';
+import 'package:getzio_billing/features/company/presentation/screens/success_screen.dart';
 import 'package:getzio_billing/features/dashboard/presentation/screens/dashboard_screen.dart';
 import 'package:getzio_billing/features/customers/presentation/screens/customers_screen.dart';
 import 'package:getzio_billing/features/products/presentation/screens/products_screen.dart';
@@ -17,6 +18,10 @@ import 'package:getzio_billing/features/documents/presentation/screens/documents
 import 'package:getzio_billing/features/more/presentation/screens/more_screen.dart';
 import 'package:getzio_billing/features/invoices/presentation/screens/invoices_screen.dart';
 import 'package:getzio_billing/features/invoices/presentation/screens/create_invoice_screen.dart';
+import 'package:getzio_billing/features/onboarding/presentation/screens/onboarding_screen.dart';
+import 'package:getzio_billing/features/onboarding/presentation/screens/create_workspace_screen.dart';
+import 'package:getzio_billing/features/onboarding/presentation/providers/guest_mode_provider.dart';
+import 'package:getzio_billing/features/reports/presentation/screens/reports_screen.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
 final _shellNavigatorKey = GlobalKey<NavigatorState>();
@@ -42,6 +47,7 @@ class RouterRefreshListenable extends ChangeNotifier {
   RouterRefreshListenable(Ref ref) {
     ref.listen<AuthStatus>(authStateProvider, (_, __) => notifyListeners());
     ref.listen<AsyncValue<CompanyModel?>>(companyProvider, (_, __) => notifyListeners());
+    ref.listen<bool>(hasSeenOnboardingProvider, (_, __) => notifyListeners());
   }
 }
 
@@ -55,22 +61,31 @@ final routerProvider = Provider<GoRouter>((ref) {
     redirect: (context, state) {
       final authStatus = ref.read(authStateProvider);
       final companyState = ref.read(companyProvider);
+      final hasSeenOnboarding = ref.read(hasSeenOnboardingProvider);
 
       if (authStatus == AuthStatus.checking) {
         return state.matchedLocation == '/splash' ? null : '/splash';
       }
 
-      final isAuthenticated = authStatus == AuthStatus.authenticated || authStatus == AuthStatus.guest;
-      final isAuthRoute = state.matchedLocation == '/login' || state.matchedLocation == '/otp';
-
-      if (!isAuthenticated) {
-        return isAuthRoute ? null : '/login';
+      // 1. Onboarding Gate
+      if (!hasSeenOnboarding) {
+        return state.matchedLocation == '/onboarding' ? null : '/onboarding';
       }
 
-      // User is authenticated, check company setup
+      // 2. Authentication Gate
+      final isAuthenticated = authStatus == AuthStatus.authenticated;
+      final isAuthRoute = state.matchedLocation == '/login' ||
+          state.matchedLocation == '/otp' ||
+          state.matchedLocation == '/create-workspace';
+
+      if (!isAuthenticated) {
+        return isAuthRoute ? null : '/create-workspace';
+      }
+
+      // 3. Business Profile / Company Gate
       final companyValue = companyState.value;
       final hasCompany = companyValue != null;
-      final isSetupRoute = state.matchedLocation == '/company-setup';
+      final isSetupRoute = state.matchedLocation == '/company-setup' || state.matchedLocation == '/success';
 
       if (companyState.isLoading) {
         return null; // Stay put while loading company status
@@ -80,7 +95,10 @@ final routerProvider = Provider<GoRouter>((ref) {
         return isSetupRoute ? null : '/company-setup';
       }
 
-      if (isAuthRoute || state.matchedLocation == '/splash' || isSetupRoute) {
+      if (isAuthRoute ||
+          state.matchedLocation == '/splash' ||
+          state.matchedLocation == '/company-setup' ||
+          state.matchedLocation == '/onboarding') {
         return '/';
       }
 
@@ -91,6 +109,18 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/splash',
         builder: (_, __) => const SplashScreen(),
+      ),
+
+      // ─── Onboarding Route ──
+      GoRoute(
+        path: '/onboarding',
+        builder: (_, __) => const OnboardingScreen(),
+      ),
+
+      // ─── Create Workspace Route ──
+      GoRoute(
+        path: '/create-workspace',
+        builder: (_, __) => const CreateWorkspaceScreen(),
       ),
 
       // ─── Auth Routes ──
@@ -107,6 +137,12 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/company-setup',
         builder: (_, __) => const CompanySetupScreen(),
+      ),
+
+      // ─── Success Route ──
+      GoRoute(
+        path: '/success',
+        builder: (_, __) => const SuccessScreen(),
       ),
 
       // ─── Invoices Route ──
@@ -149,7 +185,11 @@ final routerProvider = Provider<GoRouter>((ref) {
             },
           ),
           GoRoute(
-            path: '/more',
+            path: '/reports',
+            builder: (_, __) => const ReportsScreen(),
+          ),
+          GoRoute(
+            path: '/settings',
             builder: (_, __) => const MoreScreen(),
           ),
         ],
@@ -168,7 +208,8 @@ class _MainShell extends StatelessWidget {
     const _TabItem(icon: Icons.description_outlined, activeIcon: Icons.description, label: 'Documents', path: '/documents'),
     const _TabItem(icon: Icons.people_outline, activeIcon: Icons.people, label: 'Customers', path: '/customers'),
     const _TabItem(icon: Icons.inventory_2_outlined, activeIcon: Icons.inventory_2, label: 'Products', path: '/products'),
-    const _TabItem(icon: Icons.more_horiz_outlined, activeIcon: Icons.more_horiz, label: 'More', path: '/more'),
+    const _TabItem(icon: Icons.bar_chart_outlined, activeIcon: Icons.bar_chart, label: 'Reports', path: '/reports'),
+    const _TabItem(icon: Icons.settings_outlined, activeIcon: Icons.settings, label: 'Settings', path: '/settings'),
   ];
 
   int _getCurrentIndex(BuildContext context) {

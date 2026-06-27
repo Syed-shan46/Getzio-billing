@@ -93,8 +93,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen>
     HapticFeedback.mediumImpact();
     await completeOnboarding(ref);
     if (!mounted) return;
-    ref.read(authStateProvider.notifier).setGuest();
-    context.go('/');
+    context.go('/create-workspace');
   }
 
   void _nextPage() {

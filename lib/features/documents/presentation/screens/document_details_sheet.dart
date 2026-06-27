@@ -43,6 +43,7 @@ class _DocumentDetailsSheetState extends ConsumerState<DocumentDetailsSheet> {
       return;
     }
 
+    _showLoading();
     try {
       final doc = await DocumentPdfGenerator.generate(
         widget.document,
@@ -52,6 +53,8 @@ class _DocumentDetailsSheetState extends ConsumerState<DocumentDetailsSheet> {
 
       final pdfBytes = await doc.save();
       final docName = '${widget.document.documentTypePrefix}_${widget.document.documentNumber}.pdf';
+
+      if (mounted) _hideLoading();
 
       if (isShare) {
         await Printing.sharePdf(bytes: pdfBytes, filename: docName);
@@ -63,11 +66,74 @@ class _DocumentDetailsSheetState extends ConsumerState<DocumentDetailsSheet> {
       }
     } catch (e) {
       if (mounted) {
+        _hideLoading();
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Failed to generate PDF: $e')),
         );
       }
     }
+  }
+
+  void _showLoading() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      barrierColor: Colors.black54,
+      builder: (context) {
+        final isDark = Theme.of(context).brightness == Brightness.dark;
+        return Center(
+          child: Container(
+            width: 180,
+            padding: const EdgeInsets.symmetric(vertical: 36, horizontal: 32),
+            decoration: BoxDecoration(
+              color: isDark ? const Color(0xFF1E1E2E) : Colors.white,
+              borderRadius: BorderRadius.circular(24),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.12),
+                  blurRadius: 40,
+                  offset: const Offset(0, 12),
+                ),
+              ],
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SizedBox(
+                  width: 36,
+                  height: 36,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 3,
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Text(
+                  'Generating PDF',
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w600,
+                    color: isDark ? Colors.white : const Color(0xFF1E293B),
+                  ),
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  'Your document is being prepared…',
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: isDark ? Colors.white54 : const Color(0xFF94A3B8),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  void _hideLoading() {
+    Navigator.of(context).pop();
   }
 
   void _convertToInvoice() async {
@@ -241,140 +307,142 @@ class _DocumentDetailsSheetState extends ConsumerState<DocumentDetailsSheet> {
                 ),
               ),
               padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 20),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Align(
-                    alignment: Alignment.center,
-                    child: Container(
-                      width: 38,
-                      height: 4,
-                      decoration: BoxDecoration(
-                        color: borderCol.withOpacity(0.8),
-                        borderRadius: BorderRadius.circular(2),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 18),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Select Design Theme',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: textCol,
+              child: SafeArea(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Align(
+                      alignment: Alignment.center,
+                      child: Container(
+                        width: 38,
+                        height: 4,
+                        decoration: BoxDecoration(
+                          color: borderCol.withOpacity(0.8),
+                          borderRadius: BorderRadius.circular(2),
                         ),
                       ),
-                      IconButton(
-                        icon: const Icon(Icons.close),
-                        onPressed: () => Navigator.pop(context),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    'Choose the layout template to share this document.',
-                    style: TextStyle(
-                      fontSize: 13,
-                      color: isDark ? AppColors.textSecondaryDark : AppColors.textSecondaryLight,
                     ),
-                  ),
-                  const SizedBox(height: 20),
-                  ...templates.map((temp) {
-                    final isSelected = _selectedTemplate == temp['id'];
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: 12.0),
-                      child: InkWell(
-                        onTap: () {
-                          setModalState(() {
-                            _selectedTemplate = temp['id'] as String;
-                          });
-                          setState(() {});
-                        },
-                        borderRadius: BorderRadius.circular(16),
-                        child: Container(
-                          padding: const EdgeInsets.all(16),
-                          decoration: BoxDecoration(
-                            color: isSelected
-                                ? (temp['color'] as Color).withOpacity(0.08)
-                                : Colors.transparent,
-                            borderRadius: BorderRadius.circular(16),
-                            border: Border.all(
+                    const SizedBox(height: 18),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Select Design Theme',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: textCol,
+                          ),
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.close),
+                          onPressed: () => Navigator.pop(context),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      'Choose the layout template to share this document.',
+                      style: TextStyle(
+                        fontSize: 13,
+                        color: isDark ? AppColors.textSecondaryDark : AppColors.textSecondaryLight,
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    ...templates.map((temp) {
+                      final isSelected = _selectedTemplate == temp['id'];
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 12.0),
+                        child: InkWell(
+                          onTap: () {
+                            setModalState(() {
+                              _selectedTemplate = temp['id'] as String;
+                            });
+                            setState(() {});
+                          },
+                          borderRadius: BorderRadius.circular(16),
+                          child: Container(
+                            padding: const EdgeInsets.all(16),
+                            decoration: BoxDecoration(
                               color: isSelected
-                                  ? (temp['color'] as Color)
-                                  : borderCol,
-                              width: isSelected ? 2 : 1,
+                                  ? (temp['color'] as Color).withOpacity(0.08)
+                                  : Colors.transparent,
+                              borderRadius: BorderRadius.circular(16),
+                              border: Border.all(
+                                color: isSelected
+                                    ? (temp['color'] as Color)
+                                    : borderCol,
+                                width: isSelected ? 2 : 1,
+                              ),
+                            ),
+                            child: Row(
+                              children: [
+                                Container(
+                                  width: 44,
+                                  height: 44,
+                                  decoration: BoxDecoration(
+                                    color: (temp['color'] as Color).withOpacity(0.12),
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Icon(
+                                    temp['icon'] as IconData,
+                                    color: temp['color'] as Color,
+                                  ),
+                                ),
+                                const SizedBox(width: 16),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        temp['name'] as String,
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 15,
+                                          color: textCol,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 2),
+                                      Text(
+                                        temp['desc'] as String,
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          color: isDark ? AppColors.textSecondaryDark : AppColors.textSecondaryLight,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                if (isSelected)
+                                  Icon(
+                                    Icons.check_circle,
+                                    color: temp['color'] as Color,
+                                  )
+                              ],
                             ),
                           ),
-                          child: Row(
-                            children: [
-                              Container(
-                                width: 44,
-                                height: 44,
-                                decoration: BoxDecoration(
-                                  color: (temp['color'] as Color).withOpacity(0.12),
-                                  shape: BoxShape.circle,
-                                ),
-                                child: Icon(
-                                  temp['icon'] as IconData,
-                                  color: temp['color'] as Color,
-                                ),
-                              ),
-                              const SizedBox(width: 16),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      temp['name'] as String,
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 15,
-                                        color: textCol,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 2),
-                                    Text(
-                                      temp['desc'] as String,
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                        color: isDark ? AppColors.textSecondaryDark : AppColors.textSecondaryLight,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              if (isSelected)
-                                Icon(
-                                  Icons.check_circle,
-                                  color: temp['color'] as Color,
-                                )
-                            ],
-                          ),
                         ),
+                      );
+                    }).toList(),
+                    const SizedBox(height: 16),
+                    ElevatedButton.icon(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        _generatePdf(isShare: true);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                        backgroundColor: Theme.of(context).colorScheme.primary,
+                        foregroundColor: Colors.white,
                       ),
-                    );
-                  }).toList(),
-                  const SizedBox(height: 16),
-                  ElevatedButton.icon(
-                    onPressed: () {
-                      Navigator.pop(context);
-                      _generatePdf(isShare: true);
-                    },
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                      backgroundColor: Theme.of(context).colorScheme.primary,
-                      foregroundColor: Colors.white,
+                      icon: const Icon(Icons.share, size: 18),
+                      label: const Text('Share PDF', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
                     ),
-                    icon: const Icon(Icons.share, size: 18),
-                    label: const Text('Share PDF', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                  ),
-                  const SizedBox(height: 10),
-                ],
+                    const SizedBox(height: 10),
+                  ],
+                ),
               ),
             );
           },
@@ -405,7 +473,9 @@ class _DocumentDetailsSheetState extends ConsumerState<DocumentDetailsSheet> {
       ),
       padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 20),
       height: MediaQuery.of(context).size.height * 0.88,
-      child: Column(
+      child: SafeArea(
+        top: false,
+        child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           // Drag Handle
@@ -668,82 +738,43 @@ class _DocumentDetailsSheetState extends ConsumerState<DocumentDetailsSheet> {
             ),
           ),
 
-          // Actions Buttons footer
+          // Action icons row
+          const SizedBox(height: 16),
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              Expanded(
-                child: OutlinedButton.icon(
-                  onPressed: () => _showShareDesignPicker(context),
-                  style: OutlinedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                  ),
-                  icon: const Icon(Icons.share, size: 18),
-                  label: const Text('Share'),
-                ),
+              _ActionIcon(
+                icon: Icons.share,
+                label: 'Share',
+                onTap: () => _showShareDesignPicker(context),
               ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: OutlinedButton.icon(
-                  onPressed: () => _generatePdf(isShare: false),
-                  style: OutlinedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                  ),
-                  icon: const Icon(Icons.print, size: 18),
-                  label: const Text('Print'),
+              _ActionIcon(
+                icon: Icons.print,
+                label: 'Print',
+                onTap: () => _generatePdf(isShare: false),
+              ),
+              if (canConvert)
+                _ActionIcon(
+                  icon: Icons.transform,
+                  label: 'Convert',
+                  color: Theme.of(context).colorScheme.primary,
+                  onTap: _convertToInvoice,
                 ),
+              _ActionIcon(
+                icon: Icons.copy,
+                label: 'Duplicate',
+                onTap: _duplicateDocument,
+              ),
+              _ActionIcon(
+                icon: Icons.delete_outline,
+                label: 'Delete',
+                color: Theme.of(context).colorScheme.error,
+                onTap: _deleteDocument,
               ),
             ],
-          ),
-          const SizedBox(height: 12),
-          Row(
-            children: [
-              if (canConvert) ...[
-                Expanded(
-                  child: ElevatedButton.icon(
-                    onPressed: _convertToInvoice,
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                    ),
-                    icon: const Icon(Icons.transform, size: 18),
-                    label: const Text('Convert'),
-                  ),
-                ),
-                const SizedBox(width: 12),
-              ],
-              Expanded(
-                child: ElevatedButton.icon(
-                  onPressed: _duplicateDocument,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Theme.of(context).colorScheme.primaryContainer,
-                    foregroundColor: Theme.of(context).colorScheme.onPrimaryContainer,
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                  ),
-                  icon: const Icon(Icons.copy, size: 18),
-                  label: const Text('Duplicate'),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          OutlinedButton.icon(
-            onPressed: _deleteDocument,
-            style: OutlinedButton.styleFrom(
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              side: BorderSide(color: Theme.of(context).colorScheme.error, width: 1.5),
-              foregroundColor: Theme.of(context).colorScheme.error,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-            ),
-            icon: Icon(Icons.delete_outline, color: Theme.of(context).colorScheme.error, size: 18),
-            label: Text(
-              'Delete Document',
-              style: TextStyle(color: Theme.of(context).colorScheme.error, fontWeight: FontWeight.bold),
-            ),
           ),
         ],
+      ),
       ),
     );
   }
@@ -765,6 +796,52 @@ class _DocumentDetailsSheetState extends ConsumerState<DocumentDetailsSheet> {
         Text(label, style: style),
         Text(value, style: style),
       ],
+    );
+  }
+}
+
+class _ActionIcon extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final VoidCallback onTap;
+  final Color? color;
+
+  const _ActionIcon({
+    required this.icon,
+    required this.label,
+    required this.onTap,
+    this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final c = color ?? (isDark ? Colors.white : const Color(0xFF374151));
+    return GestureDetector(
+      onTap: onTap,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 48,
+            height: 48,
+            decoration: BoxDecoration(
+              color: c.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(14),
+            ),
+            child: Icon(icon, color: c, size: 22),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 11,
+              fontWeight: FontWeight.w500,
+              color: isDark ? AppColors.textSecondaryDark : AppColors.textSecondaryLight,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

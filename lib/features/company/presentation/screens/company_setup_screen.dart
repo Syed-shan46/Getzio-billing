@@ -161,6 +161,7 @@ class _CompanySetupScreenState extends ConsumerState<CompanySetupScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Business profile created successfully!')),
         );
+        context.go('/success');
       }
     }
   }

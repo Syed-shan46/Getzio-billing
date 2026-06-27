@@ -307,7 +307,7 @@ class _DocumentsScreenState extends ConsumerState<DocumentsScreen> {
         borderRadius: BorderRadius.circular(20),
         onTap: () {
           showModalBottomSheet(
-            context: context,
+            context: Navigator.of(context, rootNavigator: true).context,
             isScrollControlled: true,
             backgroundColor: Colors.transparent,
             builder: (context) => DocumentDetailsSheet(document: doc),
