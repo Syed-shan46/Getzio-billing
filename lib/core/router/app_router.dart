@@ -63,6 +63,8 @@ final routerProvider = Provider<GoRouter>((ref) {
       final companyState = ref.read(companyProvider);
       final hasSeenOnboarding = ref.read(hasSeenOnboardingProvider);
 
+      debugPrint('[GoRouter Redirect] Path: ${state.matchedLocation}, authStatus: $authStatus, hasSeenOnboarding: $hasSeenOnboarding');
+
       if (authStatus == AuthStatus.checking) {
         return state.matchedLocation == '/splash' ? null : '/splash';
       }

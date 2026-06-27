@@ -37,105 +37,137 @@ class CreateWorkspaceScreen extends StatelessWidget {
             ),
           ),
 
-          // Scrollable Body
+          // Scrollable Body + Fixed Bottom Button
           SafeArea(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
-              physics: const BouncingScrollPhysics(),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  const SizedBox(height: 20),
+            child: Column(
+              children: [
+                Expanded(
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
+                    physics: const BouncingScrollPhysics(),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        const SizedBox(height: 20),
 
-                  // Hero Floating Illustration
-                  const _FloatingHeroSection(),
+                        // Hero Floating Illustration
+                        const _FloatingHeroSection(),
 
-                  const SizedBox(height: 36),
+                        const SizedBox(height: 36),
 
-                  // Headline & Subtitle
-                  Text(
-                    'Create Your Business Workspace',
-                    textAlign: TextAlign.center,
-                    style: GoogleFonts.outfit(
-                      fontSize: 32,
-                      fontWeight: FontWeight.bold,
-                      height: 1.2,
-                      letterSpacing: -0.5,
-                      color: isDark ? Colors.white : const Color(0xFF1E293B),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    'Everything your business needs in one secure workspace. Create professional documents, manage customers, organize products, and grow with powerful insights.',
-                    textAlign: TextAlign.center,
-                    style: GoogleFonts.inter(
-                      fontSize: 15,
-                      height: 1.5,
-                      color: isDark ? Colors.white70 : const Color(0xFF64748B),
-                    ),
-                  ),
-
-                  const SizedBox(height: 48),
-
-                  // Benefits Grid
-                  Text(
-                    'WORKSPACE CAPABILITIES',
-                    textAlign: TextAlign.center,
-                    style: GoogleFonts.inter(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w700,
-                      letterSpacing: 1.5,
-                      color: isDark ? Colors.blueAccent : Colors.blue.shade700,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  const _BenefitsSection(),
-
-                  const SizedBox(height: 48),
-
-                  // Document Mock Previews
-                  Text(
-                    'PROFESSIONAL TEMPLATES',
-                    textAlign: TextAlign.center,
-                    style: GoogleFonts.inter(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w700,
-                      letterSpacing: 1.5,
-                      color: isDark ? Colors.blueAccent : Colors.blue.shade700,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  const _DocumentMockPreviews(),
-
-                  const SizedBox(height: 48),
-
-                  // Trust/Security Section
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.verified_user_outlined,
-                        size: 16,
-                        color: isDark ? Colors.white38 : Colors.black38,
-                      ),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: Text(
-                          'Your data is securely stored and synced across all your devices.',
+                        // Headline & Subtitle
+                        Text(
+                          'Create Your Business Workspace',
                           textAlign: TextAlign.center,
-                          style: GoogleFonts.inter(
-                            fontSize: 12,
-                            color: isDark ? Colors.white38 : Colors.black45,
+                          style: GoogleFonts.outfit(
+                            fontSize: 32,
+                            fontWeight: FontWeight.bold,
+                            height: 1.2,
+                            letterSpacing: -0.5,
+                            color: isDark ? Colors.white : const Color(0xFF1E293B),
                           ),
                         ),
-                      ),
-                    ],
+                        const SizedBox(height: 16),
+                        Text(
+                          'Everything your business needs in one secure workspace. Create professional documents, manage customers, organize products, and grow with powerful insights.',
+                          textAlign: TextAlign.center,
+                          style: GoogleFonts.inter(
+                            fontSize: 15,
+                            height: 1.5,
+                            color: isDark ? Colors.white70 : const Color(0xFF64748B),
+                          ),
+                        ),
+
+                        const SizedBox(height: 48),
+
+                        // Benefits Grid
+                        Text(
+                          'WORKSPACE CAPABILITIES',
+                          textAlign: TextAlign.center,
+                          style: GoogleFonts.inter(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w700,
+                            letterSpacing: 1.5,
+                            color: isDark ? Colors.blueAccent : Colors.blue.shade700,
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        const _BenefitsSection(),
+
+                        const SizedBox(height: 48),
+
+                        // Document Mock Previews
+                        Text(
+                          'PROFESSIONAL TEMPLATES',
+                          textAlign: TextAlign.center,
+                          style: GoogleFonts.inter(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w700,
+                            letterSpacing: 1.5,
+                            color: isDark ? Colors.blueAccent : Colors.blue.shade700,
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        const _DocumentMockPreviews(),
+
+                        const SizedBox(height: 48),
+
+                        // Trust/Security Section
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.verified_user_outlined,
+                              size: 16,
+                              color: isDark ? Colors.white38 : Colors.black38,
+                            ),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Text(
+                                'Your data is securely stored and synced across all your devices.',
+                                textAlign: TextAlign.center,
+                                style: GoogleFonts.inter(
+                                  fontSize: 12,
+                                  color: isDark ? Colors.white38 : Colors.black45,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+
+                        const SizedBox(height: 24),
+
+                        // Learn More
+                        TextButton(
+                          onPressed: () {
+                            HapticFeedback.lightImpact();
+                            _showLearnMoreModal(context);
+                          },
+                          style: TextButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(vertical: 8),
+                          ),
+                          child: Text(
+                            'Learn More',
+                            style: GoogleFonts.inter(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                              color: isDark ? Colors.white70 : const Color(0xFF475569),
+                            ),
+                          ),
+                        ),
+
+                        const SizedBox(height: 16),
+                      ],
+                    ),
                   ),
+                ),
 
-                  const SizedBox(height: 32),
-
-                  // Primary CTA
-                  ElevatedButton(
+                // Fixed Bottom CTA
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(32, 8, 32, 16),
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
                     onPressed: () {
                       HapticFeedback.lightImpact();
                       context.push('/login');
@@ -158,31 +190,9 @@ class CreateWorkspaceScreen extends StatelessWidget {
                       ),
                     ),
                   ),
-
-                  const SizedBox(height: 12),
-
-                  // Secondary CTA
-                  TextButton(
-                    onPressed: () {
-                      HapticFeedback.lightImpact();
-                      _showLearnMoreModal(context);
-                    },
-                    style: TextButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 12),
-                    ),
-                    child: Text(
-                      'Learn More',
-                      style: GoogleFonts.inter(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
-                        color: isDark ? Colors.white70 : const Color(0xFF475569),
-                      ),
-                    ),
                   ),
-
-                  const SizedBox(height: 20),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ],
