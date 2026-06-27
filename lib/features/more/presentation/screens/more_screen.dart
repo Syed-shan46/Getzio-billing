@@ -7,7 +7,7 @@ import 'package:getzio_billing/features/documents/presentation/screens/documents
 import 'package:getzio_billing/features/payments/presentation/screens/payments_screen.dart';
 import 'package:getzio_billing/features/reports/presentation/screens/reports_screen.dart';
 import 'package:getzio_billing/core/theme/app_colors.dart';
-import 'package:getzio_billing/core/theme/theme_mode_provider.dart';
+import 'package:getzio_billing/core/theme/theme_provider.dart';
 
 class MoreScreen extends ConsumerWidget {
   const MoreScreen({super.key});
@@ -18,12 +18,15 @@ class MoreScreen extends ConsumerWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('More Options'),
-      ),
+      appBar: AppBar(title: const Text('More Options')),
       body: SafeArea(
         child: ListView(
-          padding: const EdgeInsets.only(left: 20.0, right: 20.0, top: 16.0, bottom: 90.0),
+          padding: const EdgeInsets.only(
+            left: 20.0,
+            right: 20.0,
+            top: 16.0,
+            bottom: 90.0,
+          ),
           children: [
             // Business card summary
             if (company != null) ...[
@@ -39,7 +42,9 @@ class MoreScreen extends ConsumerWidget {
                   ),
                   borderRadius: BorderRadius.circular(24),
                   border: Border.all(
-                    color: isDark ? AppColors.borderDark : AppColors.borderLight,
+                    color: isDark
+                        ? AppColors.borderDark
+                        : AppColors.borderLight,
                     width: 1,
                   ),
                   boxShadow: [
@@ -61,14 +66,22 @@ class MoreScreen extends ConsumerWidget {
                           width: 52,
                           height: 52,
                           decoration: BoxDecoration(
-                            color: Theme.of(context).colorScheme.primary.withOpacity(0.08),
+                            color: Theme.of(
+                              context,
+                            ).colorScheme.primary.withOpacity(0.08),
                             shape: BoxShape.circle,
                             border: Border.all(
-                              color: Theme.of(context).colorScheme.primary.withOpacity(0.15),
+                              color: Theme.of(
+                                context,
+                              ).colorScheme.primary.withOpacity(0.15),
                               width: 1,
                             ),
                           ),
-                          child: Icon(Icons.business_rounded, size: 26, color: Theme.of(context).colorScheme.primary),
+                          child: Icon(
+                            Icons.business_rounded,
+                            size: 26,
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
                         ),
                         const SizedBox(width: 16),
                         Expanded(
@@ -77,14 +90,21 @@ class MoreScreen extends ConsumerWidget {
                             children: [
                               Text(
                                 company.companyName,
-                                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18,
+                                ),
                               ),
                               const SizedBox(height: 4),
                               Text(
-                                company.gstNumber != null ? 'GSTIN: ${company.gstNumber}' : 'Setup GST Details',
+                                company.gstNumber != null
+                                    ? 'GSTIN: ${company.gstNumber}'
+                                    : 'Setup GST Details',
                                 style: TextStyle(
                                   fontSize: 12,
-                                  color: isDark ? AppColors.textSecondaryDark : AppColors.textSecondaryLight,
+                                  color: isDark
+                                      ? AppColors.textSecondaryDark
+                                      : AppColors.textSecondaryLight,
                                   fontWeight: FontWeight.w500,
                                 ),
                               ),
@@ -94,7 +114,9 @@ class MoreScreen extends ConsumerWidget {
                         Icon(
                           Icons.arrow_forward_ios_rounded,
                           size: 14,
-                          color: isDark ? AppColors.textSecondaryDark : AppColors.textSecondaryLight,
+                          color: isDark
+                              ? AppColors.textSecondaryDark
+                              : AppColors.textSecondaryLight,
                         ),
                       ],
                     ),
@@ -127,11 +149,19 @@ class MoreScreen extends ConsumerWidget {
                       onTap: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => const DocumentsScreen()),
+                          MaterialPageRoute(
+                            builder: (context) => const DocumentsScreen(),
+                          ),
                         );
                       },
                     ),
-                    Divider(height: 1, thickness: 0.5, color: isDark ? AppColors.borderDark : AppColors.borderLight),
+                    Divider(
+                      height: 1,
+                      thickness: 0.5,
+                      color: isDark
+                          ? AppColors.borderDark
+                          : AppColors.borderLight,
+                    ),
                     _buildListTile(
                       context,
                       icon: Icons.history_rounded,
@@ -140,7 +170,9 @@ class MoreScreen extends ConsumerWidget {
                       onTap: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => const PaymentsHistoryScreen()),
+                          MaterialPageRoute(
+                            builder: (context) => const PaymentsHistoryScreen(),
+                          ),
                         );
                       },
                     ),
@@ -171,7 +203,9 @@ class MoreScreen extends ConsumerWidget {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => const ReportsScreen()),
+                      MaterialPageRoute(
+                        builder: (context) => const ReportsScreen(),
+                      ),
                     );
                   },
                 ),
@@ -195,7 +229,13 @@ class MoreScreen extends ConsumerWidget {
                 child: Column(
                   children: [
                     _buildDarkModeTile(context, ref),
-                    Divider(height: 1, thickness: 0.5, color: isDark ? AppColors.borderDark : AppColors.borderLight),
+                    Divider(
+                      height: 1,
+                      thickness: 0.5,
+                      color: isDark
+                          ? AppColors.borderDark
+                          : AppColors.borderLight,
+                    ),
                     _buildListTile(
                       context,
                       icon: Icons.logout_rounded,
@@ -206,13 +246,20 @@ class MoreScreen extends ConsumerWidget {
                         ref.read(authProvider.notifier).logout();
                       },
                     ),
-                    Divider(height: 1, thickness: 0.5, color: isDark ? AppColors.borderDark : AppColors.borderLight),
+                    Divider(
+                      height: 1,
+                      thickness: 0.5,
+                      color: isDark
+                          ? AppColors.borderDark
+                          : AppColors.borderLight,
+                    ),
                     _buildListTile(
                       context,
                       icon: Icons.delete_forever_rounded,
                       iconColor: const Color(0xFFEF4444),
                       title: 'Delete Account',
-                      subtitle: 'Permanently delete your profile and company data',
+                      subtitle:
+                          'Permanently delete your profile and company data',
                       onTap: () {
                         _confirmAccountDeletion(context, ref);
                       },
@@ -230,11 +277,15 @@ class MoreScreen extends ConsumerWidget {
   Widget _buildDarkModeTile(BuildContext context, WidgetRef ref) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final themeMode = ref.watch(themeModeProvider);
-    final isDarkMode = themeMode == ThemeMode.dark ||
+    final isDarkMode =
+        themeMode == ThemeMode.dark ||
         (themeMode == ThemeMode.system && isDark);
 
     return ListTile(
-      contentPadding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
+      contentPadding: const EdgeInsets.symmetric(
+        horizontal: 20.0,
+        vertical: 8.0,
+      ),
       leading: Container(
         width: 40,
         height: 40,
@@ -248,14 +299,19 @@ class MoreScreen extends ConsumerWidget {
           size: 20,
         ),
       ),
-      title: const Text('Dark Mode', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14.5)),
+      title: const Text(
+        'Dark Mode',
+        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14.5),
+      ),
       subtitle: Padding(
         padding: const EdgeInsets.only(top: 4.0),
         child: Text(
           isDarkMode ? 'Dark theme is active' : 'Switch to dark theme',
           style: TextStyle(
             fontSize: 12,
-            color: isDark ? AppColors.textSecondaryDark : AppColors.textSecondaryLight,
+            color: isDark
+                ? AppColors.textSecondaryDark
+                : AppColors.textSecondaryLight,
           ),
         ),
       ),
@@ -263,9 +319,9 @@ class MoreScreen extends ConsumerWidget {
         value: isDarkMode,
         activeColor: Theme.of(context).colorScheme.primary,
         onChanged: (value) {
-          ref.read(themeModeProvider.notifier).setThemeMode(
-                value ? ThemeMode.dark : ThemeMode.light,
-              );
+          ref
+              .read(themeModeProvider.notifier)
+              .setThemeMode(value ? ThemeMode.dark : ThemeMode.light);
         },
       ),
     );
@@ -280,7 +336,9 @@ class MoreScreen extends ConsumerWidget {
         style: TextStyle(
           fontSize: 10,
           fontWeight: FontWeight.bold,
-          color: isDark ? AppColors.textSecondaryDark : AppColors.textSecondaryLight,
+          color: isDark
+              ? AppColors.textSecondaryDark
+              : AppColors.textSecondaryLight,
           letterSpacing: 1.0,
         ),
       ),
@@ -297,12 +355,16 @@ class MoreScreen extends ConsumerWidget {
   }) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return ListTile(
-      contentPadding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
+      contentPadding: const EdgeInsets.symmetric(
+        horizontal: 20.0,
+        vertical: 8.0,
+      ),
       leading: Container(
         width: 40,
         height: 40,
         decoration: BoxDecoration(
-          color: (iconColor ?? Theme.of(context).colorScheme.primary).withOpacity(0.08),
+          color: (iconColor ?? Theme.of(context).colorScheme.primary)
+              .withOpacity(0.08),
           borderRadius: BorderRadius.circular(10),
         ),
         child: Icon(
@@ -311,20 +373,27 @@ class MoreScreen extends ConsumerWidget {
           size: 20,
         ),
       ),
-      title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14.5)),
+      title: Text(
+        title,
+        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14.5),
+      ),
       subtitle: Padding(
         padding: const EdgeInsets.only(top: 4.0),
         child: Text(
           subtitle,
           style: TextStyle(
             fontSize: 12,
-            color: isDark ? AppColors.textSecondaryDark : AppColors.textSecondaryLight,
+            color: isDark
+                ? AppColors.textSecondaryDark
+                : AppColors.textSecondaryLight,
           ),
         ),
       ),
       trailing: Icon(
         Icons.arrow_forward_ios_rounded,
-        color: isDark ? AppColors.textSecondaryDark.withOpacity(0.5) : AppColors.textSecondaryLight.withOpacity(0.5),
+        color: isDark
+            ? AppColors.textSecondaryDark.withOpacity(0.5)
+            : AppColors.textSecondaryLight.withOpacity(0.5),
         size: 13,
       ),
       onTap: onTap,
@@ -338,7 +407,10 @@ class MoreScreen extends ConsumerWidget {
         return AlertDialog(
           title: const Text(
             'Delete Account',
-            style: TextStyle(color: Color(0xFFEF4444), fontWeight: FontWeight.bold),
+            style: TextStyle(
+              color: Color(0xFFEF4444),
+              fontWeight: FontWeight.bold,
+            ),
           ),
           content: const Text(
             'Are you sure you want to permanently delete your account and all associated company/billing data? This action is immediate and cannot be undone.',
@@ -351,15 +423,14 @@ class MoreScreen extends ConsumerWidget {
             TextButton(
               onPressed: () async {
                 Navigator.pop(dialogContext); // Close dialog
-                
+
                 try {
                   // Show loading spinner dialog/overlay
                   showDialog(
                     context: context,
                     barrierDismissible: false,
-                    builder: (loadingContext) => const Center(
-                      child: CircularProgressIndicator(),
-                    ),
+                    builder: (loadingContext) =>
+                        const Center(child: CircularProgressIndicator()),
                   );
 
                   await ref.read(authProvider.notifier).deleteAccount();
@@ -379,7 +450,9 @@ class MoreScreen extends ConsumerWidget {
                     Navigator.pop(context); // Close loading dialog
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
-                        content: Text('Failed to delete account: ${e.toString().replaceFirst('Exception: ', '')}'),
+                        content: Text(
+                          'Failed to delete account: ${e.toString().replaceFirst('Exception: ', '')}',
+                        ),
                         backgroundColor: const Color(0xFFEF4444),
                         behavior: SnackBarBehavior.floating,
                       ),
@@ -389,7 +462,10 @@ class MoreScreen extends ConsumerWidget {
               },
               child: const Text(
                 'Delete',
-                style: TextStyle(color: Color(0xFFEF4444), fontWeight: FontWeight.bold),
+                style: TextStyle(
+                  color: Color(0xFFEF4444),
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
           ],

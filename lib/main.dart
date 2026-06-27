@@ -7,6 +7,8 @@ import 'package:firebase_core/firebase_core.dart';
 
 import 'package:getzio_billing/core/storage/hive_service.dart';
 
+import 'package:getzio_billing/core/theme/theme_provider.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -37,13 +39,14 @@ class GetzioBillingApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final router = ref.watch(routerProvider);
+    final themeMode = ref.watch(themeModeProvider);
 
     return MaterialApp.router(
       title: 'Getzio Desk',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
-      themeMode: ThemeMode.system,
+      themeMode: themeMode,
       routerConfig: router,
     );
   }
