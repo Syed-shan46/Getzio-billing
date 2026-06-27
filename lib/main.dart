@@ -5,8 +5,17 @@ import 'package:getzio_billing/core/router/app_router.dart';
 
 import 'package:firebase_core/firebase_core.dart';
 
+import 'package:getzio_billing/core/storage/hive_service.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  final hiveService = HiveService();
+  try {
+    await hiveService.init();
+  } catch (e) {
+    debugPrint('Hive initialization failed: $e');
+  }
 
   try {
     await Firebase.initializeApp();
@@ -15,8 +24,11 @@ void main() async {
   }
 
   runApp(
-    const ProviderScope(
-      child: GetzioBillingApp(),
+    ProviderScope(
+      overrides: [
+        hiveServiceProvider.overrideWithValue(hiveService),
+      ],
+      child: const GetzioBillingApp(),
     ),
   );
 }

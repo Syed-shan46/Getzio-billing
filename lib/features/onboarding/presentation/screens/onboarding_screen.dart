@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:getzio_billing/core/theme/app_colors.dart';
-import 'package:getzio_billing/core/router/app_router.dart';
 import 'package:getzio_billing/features/onboarding/presentation/providers/guest_mode_provider.dart';
 
 class OnboardingScreen extends ConsumerStatefulWidget {

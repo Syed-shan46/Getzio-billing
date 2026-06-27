@@ -587,7 +587,7 @@ class _DocumentMockPreviews extends StatelessWidget {
             client: 'Stripe Payments Ltd.',
             amount: '₹42,500.00',
             badge: 'PAID',
-            badgeColor: Colors.emerald,
+            badgeColor: const Color(0xFF10B981),
             cardBg: cardBg,
             borderCol: borderCol,
             isDark: isDark,

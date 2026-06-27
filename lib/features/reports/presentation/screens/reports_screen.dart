@@ -53,7 +53,6 @@ class ReportsScreen extends ConsumerWidget {
             // Calculations
             double paidRevenue = 0.0;
             double outstandingBalance = 0.0;
-            double draftValue = 0.0;
             double totalSalesValue = 0.0;
             int paidCount = 0;
             int pendingCount = 0;
@@ -71,7 +70,6 @@ class ReportsScreen extends ConsumerWidget {
               final clientName = inv.customerObject?.name ?? 'Unknown Customer';
 
               if (inv.status == 'draft') {
-                draftValue += total;
                 draftCount++;
               } else {
                 totalSalesValue += total;

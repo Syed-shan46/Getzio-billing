@@ -50,7 +50,7 @@ class _SuccessScreenState extends State<SuccessScreen> with SingleTickerProvider
           size: random.nextDouble() * 8 + 4,
           color: [
             Colors.blue,
-            Colors.emerald,
+            const Color(0xFF10B981),
             Colors.purple,
             Colors.amber,
             Colors.pink,
