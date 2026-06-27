@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dio/dio.dart';
 import 'package:getzio_billing/core/network/dio_client.dart';
 import 'package:getzio_billing/features/company/data/models/company_model.dart';
-import 'package:getzio_billing/core/storage/secure_storage_service.dart';
 
 class CompanyNotifier extends AsyncNotifier<CompanyModel?> {
   @override
@@ -12,10 +11,6 @@ class CompanyNotifier extends AsyncNotifier<CompanyModel?> {
   }
 
   Future<CompanyModel?> _fetchCompany() async {
-    final token = await ref.read(secureStorageProvider).getToken();
-    if (token == null || token.isEmpty) {
-      return null;
-    }
     final dio = ref.read(dioProvider);
     try {
       final response = await dio.get('/billing/company');
@@ -62,14 +57,17 @@ class CompanyNotifier extends AsyncNotifier<CompanyModel?> {
         if (stampBase64 != null) 'stamp': stampBase64,
         if (defaultTemplate != null) 'defaultTemplate': defaultTemplate,
       };
-      
+
       final response = await dio.post('/billing/company', data: payload);
       if (response.statusCode == 200 || response.statusCode == 201) {
         final data = response.data['data']['company'];
         final updated = CompanyModel.fromJson(data as Map<String, dynamic>);
         state = AsyncValue.data(updated);
       } else {
-        state = AsyncValue.error('Failed to save company details.', StackTrace.current);
+        state = AsyncValue.error(
+          'Failed to save company details.',
+          StackTrace.current,
+        );
       }
     } catch (e, stack) {
       if (e is DioException) {
@@ -84,4 +82,6 @@ class CompanyNotifier extends AsyncNotifier<CompanyModel?> {
   }
 }
 
-final companyProvider = AsyncNotifierProvider<CompanyNotifier, CompanyModel?>(CompanyNotifier.new);
+final companyProvider = AsyncNotifierProvider<CompanyNotifier, CompanyModel?>(
+  CompanyNotifier.new,
+);
