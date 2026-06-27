@@ -25,9 +25,7 @@ void main() async {
 
   runApp(
     ProviderScope(
-      overrides: [
-        hiveServiceProvider.overrideWithValue(hiveService),
-      ],
+      overrides: [hiveServiceProvider.overrideWithValue(hiveService)],
       child: const GetzioBillingApp(),
     ),
   );

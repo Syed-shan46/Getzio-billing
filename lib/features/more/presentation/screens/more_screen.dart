@@ -7,6 +7,7 @@ import 'package:getzio_billing/features/documents/presentation/screens/documents
 import 'package:getzio_billing/features/payments/presentation/screens/payments_screen.dart';
 import 'package:getzio_billing/features/reports/presentation/screens/reports_screen.dart';
 import 'package:getzio_billing/core/theme/app_colors.dart';
+import 'package:getzio_billing/core/theme/theme_mode_provider.dart';
 
 class MoreScreen extends ConsumerWidget {
   const MoreScreen({super.key});
@@ -193,6 +194,8 @@ class MoreScreen extends ConsumerWidget {
                 borderRadius: BorderRadius.circular(24),
                 child: Column(
                   children: [
+                    _buildDarkModeTile(context, ref),
+                    Divider(height: 1, thickness: 0.5, color: isDark ? AppColors.borderDark : AppColors.borderLight),
                     _buildListTile(
                       context,
                       icon: Icons.logout_rounded,
@@ -220,6 +223,50 @@ class MoreScreen extends ConsumerWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildDarkModeTile(BuildContext context, WidgetRef ref) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final themeMode = ref.watch(themeModeProvider);
+    final isDarkMode = themeMode == ThemeMode.dark ||
+        (themeMode == ThemeMode.system && isDark);
+
+    return ListTile(
+      contentPadding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
+      leading: Container(
+        width: 40,
+        height: 40,
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.primary.withOpacity(0.08),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Icon(
+          isDarkMode ? Icons.dark_mode_rounded : Icons.light_mode_rounded,
+          color: Theme.of(context).colorScheme.primary,
+          size: 20,
+        ),
+      ),
+      title: const Text('Dark Mode', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14.5)),
+      subtitle: Padding(
+        padding: const EdgeInsets.only(top: 4.0),
+        child: Text(
+          isDarkMode ? 'Dark theme is active' : 'Switch to dark theme',
+          style: TextStyle(
+            fontSize: 12,
+            color: isDark ? AppColors.textSecondaryDark : AppColors.textSecondaryLight,
+          ),
+        ),
+      ),
+      trailing: Switch.adaptive(
+        value: isDarkMode,
+        activeColor: Theme.of(context).colorScheme.primary,
+        onChanged: (value) {
+          ref.read(themeModeProvider.notifier).setThemeMode(
+                value ? ThemeMode.dark : ThemeMode.light,
+              );
+        },
       ),
     );
   }

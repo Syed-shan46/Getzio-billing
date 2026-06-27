@@ -21,7 +21,6 @@ import 'package:getzio_billing/features/invoices/presentation/screens/create_inv
 import 'package:getzio_billing/features/onboarding/presentation/screens/onboarding_screen.dart';
 import 'package:getzio_billing/features/onboarding/presentation/screens/create_workspace_screen.dart';
 import 'package:getzio_billing/features/onboarding/presentation/providers/guest_mode_provider.dart';
-import 'package:getzio_billing/features/reports/presentation/screens/reports_screen.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
 final _shellNavigatorKey = GlobalKey<NavigatorState>();
@@ -59,6 +58,11 @@ final routerProvider = Provider<GoRouter>((ref) {
     initialLocation: '/splash',
     refreshListenable: refreshListenable,
     redirect: (context, state) {
+      final location = state.uri.toString();
+      if (location.contains('firebaseauth')) {
+        return '/otp';
+      }
+
       final authStatus = ref.read(authStateProvider);
       final companyState = ref.read(companyProvider);
       final hasSeenOnboarding = ref.read(hasSeenOnboardingProvider);
@@ -187,10 +191,6 @@ final routerProvider = Provider<GoRouter>((ref) {
             },
           ),
           GoRoute(
-            path: '/reports',
-            builder: (_, __) => const ReportsScreen(),
-          ),
-          GoRoute(
             path: '/settings',
             builder: (_, __) => const MoreScreen(),
           ),
@@ -210,7 +210,6 @@ class _MainShell extends StatelessWidget {
     const _TabItem(icon: Icons.description_outlined, activeIcon: Icons.description, label: 'Documents', path: '/documents'),
     const _TabItem(icon: Icons.people_outline, activeIcon: Icons.people, label: 'Customers', path: '/customers'),
     const _TabItem(icon: Icons.inventory_2_outlined, activeIcon: Icons.inventory_2, label: 'Products', path: '/products'),
-    const _TabItem(icon: Icons.bar_chart_outlined, activeIcon: Icons.bar_chart, label: 'Reports', path: '/reports'),
     const _TabItem(icon: Icons.settings_outlined, activeIcon: Icons.settings, label: 'Settings', path: '/settings'),
   ];
 
